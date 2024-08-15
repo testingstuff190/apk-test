@@ -21,7 +21,7 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          firebase appdistribution:distribute /mnt/data/bitbar-sample-app.apk \
+          firebase appdistribution:distribute bitbar-sample-app.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups "testers" \
             --release-notes "Testing Firebase App Distribution with a random APK file."
