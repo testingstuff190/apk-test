@@ -23,10 +23,13 @@ jobs:
         run: echo "$GOOGLE_APPLICATION_CREDENTIALS" > /tmp/account.json
         
       - name: Fetch version from Firebase Cloud Storage
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
         run: |
           BUCKET_NAME="testo-ea214.appspot.com"
           VERSION_FILE="version.txt"
           
+          gsutil ls gs://$BUCKET_NAME
           # Step 1: Download the version.txt file from Firebase Cloud Storage
           gsutil cp gs://$BUCKET_NAME/$VERSION_FILE .
 
@@ -55,5 +58,5 @@ jobs:
           firebase appdistribution:distribute bitbar-sample-app.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups "testers" \
-            --release-notes "Testing Firebase App Distribution with a random APK file." \
+            --release-notes "Version $NEW_VERSION_NUMBER released." \
             --debug
