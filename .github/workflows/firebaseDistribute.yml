@@ -44,13 +44,11 @@ jobs:
           PATCH=$((PATCH + 1))
           NEW_VERSION_NUMBER="${MAJOR}.${MINOR}.${PATCH}"
           echo "New Version: $NEW_VERSION_NUMBER"
-
-          # Step 5: Update the version.txt file with the new version number
-          echo "$NEW_VERSION_NUMBER" > $VERSION_FILE
-
-          # Step 6: Upload the updated version.txt file back to Firebase Cloud Storage
-          gsutil cp $VERSION_FILE gs://$BUCKET_NAME/$VERSION_FILE
+          # Export the new version to be used in subsequent steps
           echo "NEW_VERSION_NUMBER=$NEW_VERSION_NUMBER" >> $GITHUB_ENV
+
+      - name: Dummy Build
+        run: echo "Building"
       - name: Upload APK to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
@@ -60,3 +58,19 @@ jobs:
             --groups "testers" \
             --release-notes "Version $NEW_VERSION_NUMBER released." \
             --debug
+
+        continue-on-error: false
+
+      - name: Update version.txt in Firebase Cloud Storage
+        if: success()  # to ensure this step only runs if the previous steps succeeded
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
+        run: |
+          BUCKET_NAME="testo-ea214.appspot.com"
+          VERSION_FILE="version.txt"
+          gcloud auth activate-service-account --key-file=/tmp/account.json
+          # Step 5: Update the version.txt file with the new version number
+          echo "$NEW_VERSION_NUMBER" > $VERSION_FILE
+
+          # Step 6: Upload the updated version.txt file back to Firebase Cloud Storage
+          gsutil cp $VERSION_FILE gs://$BUCKET_NAME/$VERSION_FILE
