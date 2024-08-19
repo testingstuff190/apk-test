@@ -50,7 +50,7 @@ jobs:
 
           # Step 6: Upload the updated version.txt file back to Firebase Cloud Storage
           gsutil cp $VERSION_FILE gs://$BUCKET_NAME/$VERSION_FILE
-          NEW_VERSION_NUMBER=$NEW_VERSION_NUMBER" >> $GITHUB_ENV
+          echo "NEW_VERSION_NUMBER=$NEW_VERSION_NUMBER" >> $GITHUB_ENV
       - name: Upload APK to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
