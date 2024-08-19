@@ -48,8 +48,8 @@ jobs:
           echo "NEW_VERSION_NUMBER=$NEW_VERSION_NUMBER" >> $GITHUB_ENV
 
       - name: Dummy Build
-        # run: echo "Building"
-        run: exit 1
+        run: echo "Building"
+        # run: exit 1
       - name: Upload APK to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/account.json
