@@ -28,7 +28,7 @@ jobs:
         run: |
           BUCKET_NAME="testo-ea214.appspot.com"
           VERSION_FILE="version.txt"
-          # gcloud auth activate-service-account --key-file=/tmp/account.json
+          gcloud auth activate-service-account --key-file=/tmp/account.json
           gsutil ls gs://$BUCKET_NAME
           # Step 1: Download the version.txt file from Firebase Cloud Storage
           gsutil cp gs://$BUCKET_NAME/$VERSION_FILE .
