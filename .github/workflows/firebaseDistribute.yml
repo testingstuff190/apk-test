@@ -21,6 +21,32 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: echo "$GOOGLE_APPLICATION_CREDENTIALS" > /tmp/account.json
+        
+      - name: Fetch version from Firebase Cloud Storage
+        run: |
+          BUCKET_NAME="testo-ea214.appspot.com"
+          VERSION_FILE="version.txt"
+          
+          # Step 1: Download the version.txt file from Firebase Cloud Storage
+          gsutil cp gs://$BUCKET_NAME/$VERSION_FILE .
+
+          # Step 2: Read the version number from the file
+          CURRENT_VERSION=$(cat $VERSION_FILE)
+          echo "Current Version: $CURRENT_VERSION"
+
+          # Step 3: Split version number into major, minor, patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          # Step 4: Increment version (patch version in this case)
+          PATCH=$((PATCH + 1))
+          NEW_VERSION_NUMBER="${MAJOR}.${MINOR}.${PATCH}"
+          echo "New Version: $NEW_VERSION_NUMBER"
+
+          # Step 5: Update the version.txt file with the new version number
+          echo "$NEW_VERSION_NUMBER" > $VERSION_FILE
+
+          # Step 6: Upload the updated version.txt file back to Firebase Cloud Storage
+          gsutil cp $VERSION_FILE gs://$BUCKET_NAME/$VERSION_FILE
 
       - name: Upload APK to Firebase App Distribution
         env:
