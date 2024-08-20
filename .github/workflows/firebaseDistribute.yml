@@ -81,7 +81,7 @@ jobs:
           firebase appdistribution:distribute bitbar-sample-app.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --groups "testers" \
-            --release-notes releasenotes.txt \
+            --release-notes-file releasenotes.txt \
             --debug
 
         continue-on-error: false
